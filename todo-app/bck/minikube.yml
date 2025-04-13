@@ -1,0 +1,60 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.quarkus.io/commit-id: 7f8fc6454633d7c9cb416d5d5dc2e223a282e3c5
+    app.quarkus.io/build-timestamp: 2021-09-13 - 16:08:58 +0000
+  labels:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  name: todo-app
+spec:
+  ports:
+    - name: http
+      nodePort: 31777
+      port: 80
+      targetPort: 8080
+  selector:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.quarkus.io/commit-id: 7f8fc6454633d7c9cb416d5d5dc2e223a282e3c5
+    app.quarkus.io/build-timestamp: 2021-09-13 - 16:08:58 +0000
+  labels:
+    app.kubernetes.io/name: todo-app
+    app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  name: todo-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: todo-app
+      app.kubernetes.io/version: 1.0.0-SNAPSHOT
+  template:
+    metadata:
+      annotations:
+        app.quarkus.io/commit-id: 7f8fc6454633d7c9cb416d5d5dc2e223a282e3c5
+        app.quarkus.io/build-timestamp: 2021-09-13 - 16:08:58 +0000
+      labels:
+        app.kubernetes.io/name: todo-app
+        app.kubernetes.io/version: 1.0.0-SNAPSHOT
+    spec:
+      containers:
+        - env:
+            - name: KUBERNETES_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          image: srozange/todo-app:1.0.0-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          name: todo-app
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP

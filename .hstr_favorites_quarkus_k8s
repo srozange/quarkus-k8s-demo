@@ -1,0 +1,20 @@
+eval $(minikube docker-env)
+favorites-view 
+mvn compile quarkus:dev
+mvn package -Dquarkus.kubernetes.deploy=true -DskipTests=true
+java -jar target/quarkus-app/quarkus-run.jar 
+mvn package -DskipTests=true
+sdk use java 11.0.11.hs-adpt
+minikube dashboard
+mvn clean package -Pnative -Dquarkus.native.container-build=true -Dnative-image.xmx=12g -DskipTests=true
+sysmon java
+sysmon todo-app
+kubectl get pods
+kubectl apply -f target/kubernetes/kubernetes.yml 
+code target/kubernetes/kubernetes.yml 
+kubectl delete -f target/kubernetes/kubernetes.yml 
+./target/todo-app-1.0.0-SNAPSHOT-runner 
+docker image build -f src/main/docker/Dockerfile.native -t srozange/todo-app:1.0.0-SNAPSHOT .
+code src/main/docker/Dockerfile.native 
+minikube service todo-app
+minikube tunnel
